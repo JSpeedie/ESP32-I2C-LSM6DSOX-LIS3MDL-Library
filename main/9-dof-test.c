@@ -25,9 +25,10 @@ void app_main(void)
 		.scl_io_num = I2C_SCL_PIN_NUM,
 		.sda_io_num = I2C_SDA_PIN_NUM,
 		.glitch_ignore_cnt = 7,
-		.flags.enable_internal_pullup = false,
+		.flags.enable_internal_pullup = false
 	};
 		/* .flags.enable_internal_pullup = true */
+		/* .flags.enable_internal_pullup = false, */
 
 	i2c_master_bus_handle_t bus_handle;
 	ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_mst_config, &bus_handle));
@@ -36,7 +37,7 @@ void app_main(void)
 	/* 2. Configure the LIS3MDL (magnetometer) */
 	i2c_device_config_t magnetometer_cfg = {
 		.dev_addr_length = I2C_ADDR_BIT_LEN_7,
-		.device_address = 0x1C,
+		.device_address = 0x1E,
 		.scl_speed_hz = 100000,
 	};
 
@@ -56,31 +57,39 @@ void app_main(void)
 	ESP_ERROR_CHECK(i2c_master_bus_add_device(bus_handle, &accelgyro_cfg, \
         &accelgyro_handle));
 
-    /* 4. Turn on and set operation control for accelerometer and gyro */
-    esp_i2c_lsm6dsox_begin(&accelgyro_handle);
+
+    /* 4a. Turn on and set operation control for accelerometer and gyro */
+    struct i2c_lsm6dsox i2c_lsm6dsox = esp_i2c_lsm6dsox_begin(&accelgyro_handle);
+    /* 4b. Turn on and set operation control for magnetometer */
+    struct i2c_lis3mdl i2c_lis3mdl = esp_i2c_lis3mdl_begin(&magnetometer_handle);
 
 	vTaskDelay(1000 / portTICK_PERIOD_MS);
 
 	while (1) {
-		vTaskDelay(1000 / portTICK_PERIOD_MS);
+		vTaskDelay(500 / portTICK_PERIOD_MS);
 
-        int16_t outx_g = esp_i2c_lsm6dsox_get_gyro_x(&accelgyro_handle);
-        int16_t outy_g = esp_i2c_lsm6dsox_get_gyro_y(&accelgyro_handle);
-        int16_t outz_g = esp_i2c_lsm6dsox_get_gyro_z(&accelgyro_handle);
+        float outxyz_g[3];
+        esp_i2c_lsm6dsox_get_gyro_data(&i2c_lsm6dsox, &accelgyro_handle, &outxyz_g[0]);
+        /* Convert from mdps (millidegrees per second) to dps (degrees per second) */
+        outxyz_g[0] /= 1000;
+        outxyz_g[1] /= 1000;
+        outxyz_g[2] /= 1000;
 
-        int16_t outx_a = esp_i2c_lsm6dsox_get_accel_x(&accelgyro_handle);
-        int16_t outy_a = esp_i2c_lsm6dsox_get_accel_y(&accelgyro_handle);
-        int16_t outz_a = esp_i2c_lsm6dsox_get_accel_z(&accelgyro_handle);
+        float outxyz_a[3];
+        esp_i2c_lsm6dsox_get_accel_data(&i2c_lsm6dsox, &accelgyro_handle, &outxyz_a[0]);
+        /* Convert from mg (milligravity, not milligrams) to g (gravity) */
+        outxyz_a[0] /= 1000;
+        outxyz_a[1] /= 1000;
+        outxyz_a[2] /= 1000;
 
-        int16_t outx_m = esp_i2c_lis3mdl_get_x(&magnetometer_handle);
-        int16_t outy_m = esp_i2c_lis3mdl_get_y(&magnetometer_handle);
-        int16_t outz_m = esp_i2c_lis3mdl_get_z(&magnetometer_handle);
+        float outxyz_m[3];
+        esp_i2c_lis3mdl_get_data(&i2c_lis3mdl, &magnetometer_handle, &outxyz_m[0]);
 
-        printf("gyroscope: (%5d %5d %5d)    " \
-            "accelerometer: (%5d %5d %5d)    " \
-            "magnetometer: (%5d %5d %5d)\n", \
-            outx_g, outy_g, outz_g, \
-            outx_a, outy_a, outz_a, \
-            outx_m, outy_m, outz_m);
+        printf("gyroscope: (% #7.2fdps % #7.2fdps % #7.2fdps)    " \
+            "accelerometer: (% #7.3fg % #7.3fg % #7.3fg)    " \
+            "magnetometer: (% #7.3fG % #7.3fG % #7.3fG)\n", \
+            outxyz_g[0], outxyz_g[1], outxyz_g[2], \
+            outxyz_a[0], outxyz_a[1], outxyz_a[2], \
+            outxyz_m[0], outxyz_m[1], outxyz_m[2]);
 	}
 }
