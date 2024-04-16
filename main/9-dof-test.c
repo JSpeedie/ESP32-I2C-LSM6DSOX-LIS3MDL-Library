@@ -63,8 +63,6 @@ void app_main(void)
     /* 4b. Turn on and set operation control for magnetometer */
     struct i2c_lis3mdl i2c_lis3mdl = esp_i2c_lis3mdl_begin(&magnetometer_handle);
 
-	vTaskDelay(1000 / portTICK_PERIOD_MS);
-
 	while (1) {
 		vTaskDelay(500 / portTICK_PERIOD_MS);
 
@@ -87,7 +85,7 @@ void app_main(void)
 
         printf("gyroscope: (% #7.2fdps % #7.2fdps % #7.2fdps)    " \
             "accelerometer: (% #7.3fg % #7.3fg % #7.3fg)    " \
-            "magnetometer: (% #7.3fG % #7.3fG % #7.3fG)\n", \
+            "magnetometer: (% #7.4fG % #7.4fG % #7.4fG)\n", \
             outxyz_g[0], outxyz_g[1], outxyz_g[2], \
             outxyz_a[0], outxyz_a[1], outxyz_a[2], \
             outxyz_m[0], outxyz_m[1], outxyz_m[2]);
