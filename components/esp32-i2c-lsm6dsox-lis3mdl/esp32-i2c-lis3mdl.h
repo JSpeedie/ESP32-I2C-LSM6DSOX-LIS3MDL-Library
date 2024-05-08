@@ -86,19 +86,20 @@ typedef enum {
 
 
 struct i2c_lis3mdl {
+    i2c_master_dev_handle_t *i2c_handle;
 	float sensitivity;
 };
 
 
-struct i2c_lis3mdl esp_i2c_lis3mdl_begin(i2c_master_dev_handle_t *dev_handle);
+void esp_i2c_lis3mdl_begin(struct i2c_lis3mdl *i2c_lis3mdl);
 
-void esp_i2c_lis3mdl_get_data(struct i2c_lis3mdl *i2c_lis3mdl, i2c_master_dev_handle_t *dev_handle, float *outxyz);
+void esp_i2c_lis3mdl_get_data(struct i2c_lis3mdl *i2c_lis3mdl, float *outxyz);
 
-float esp_i2c_lis3mdl_get_x(struct i2c_lis3mdl *i2c_lis3mdl, i2c_master_dev_handle_t *dev_handle);
+float esp_i2c_lis3mdl_get_x(struct i2c_lis3mdl *i2c_lis3mdl);
 
-float esp_i2c_lis3mdl_get_y(struct i2c_lis3mdl *i2c_lis3mdl, i2c_master_dev_handle_t *dev_handle);
+float esp_i2c_lis3mdl_get_y(struct i2c_lis3mdl *i2c_lis3mdl);
 
-float esp_i2c_lis3mdl_get_z(struct i2c_lis3mdl *i2c_lis3mdl, i2c_master_dev_handle_t *dev_handle);
+float esp_i2c_lis3mdl_get_z(struct i2c_lis3mdl *i2c_lis3mdl);
 
 
 #endif

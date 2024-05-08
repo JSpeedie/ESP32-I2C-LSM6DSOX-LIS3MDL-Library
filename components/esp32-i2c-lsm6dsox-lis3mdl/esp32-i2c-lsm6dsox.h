@@ -125,28 +125,29 @@ struct lsm6dsox_ctrl8_xl {
 
 
 struct i2c_lsm6dsox {
+    i2c_master_dev_handle_t *i2c_handle;
 	float accelerometer_sensitivity;
 	float gyroscope_sensitivity;
 };
 
 
-struct i2c_lsm6dsox esp_i2c_lsm6dsox_begin(i2c_master_dev_handle_t *dev_handle);
+void esp_i2c_lsm6dsox_begin(struct i2c_lsm6dsox *i2c_lsm6dsox);
 
-void esp_i2c_lsm6dsox_get_gyro_data(struct i2c_lsm6dsox *i2c_lsm6dsox, i2c_master_dev_handle_t *dev_handle, float *outxyz_g);
+void esp_i2c_lsm6dsox_get_gyro_data(struct i2c_lsm6dsox *i2c_lsm6dsox, float *outxyz_g);
 
-float esp_i2c_lsm6dsox_get_gyro_x(struct i2c_lsm6dsox *i2c_lsm6dsox, i2c_master_dev_handle_t *dev_handle);
+float esp_i2c_lsm6dsox_get_gyro_x(struct i2c_lsm6dsox *i2c_lsm6dsox);
 
-float esp_i2c_lsm6dsox_get_gyro_y(struct i2c_lsm6dsox *i2c_lsm6dsox, i2c_master_dev_handle_t *dev_handle);
+float esp_i2c_lsm6dsox_get_gyro_y(struct i2c_lsm6dsox *i2c_lsm6dsox);
 
-float esp_i2c_lsm6dsox_get_gyro_z(struct i2c_lsm6dsox *i2c_lsm6dsox, i2c_master_dev_handle_t *dev_handle);
+float esp_i2c_lsm6dsox_get_gyro_z(struct i2c_lsm6dsox *i2c_lsm6dsox);
 
-void esp_i2c_lsm6dsox_get_accel_data(struct i2c_lsm6dsox *i2c_lsm6dsox, i2c_master_dev_handle_t *dev_handle, float *outxyz_a);
+void esp_i2c_lsm6dsox_get_accel_data(struct i2c_lsm6dsox *i2c_lsm6dsox, float *outxyz_a);
 
-float esp_i2c_lsm6dsox_get_accel_x(struct i2c_lsm6dsox *i2c_lsm6dsox, i2c_master_dev_handle_t *dev_handle);
+float esp_i2c_lsm6dsox_get_accel_x(struct i2c_lsm6dsox *i2c_lsm6dsox);
 
-float esp_i2c_lsm6dsox_get_accel_y(struct i2c_lsm6dsox *i2c_lsm6dsox, i2c_master_dev_handle_t *dev_handle);
+float esp_i2c_lsm6dsox_get_accel_y(struct i2c_lsm6dsox *i2c_lsm6dsox);
 
-float esp_i2c_lsm6dsox_get_accel_z(struct i2c_lsm6dsox *i2c_lsm6dsox, i2c_master_dev_handle_t *dev_handle);
+float esp_i2c_lsm6dsox_get_accel_z(struct i2c_lsm6dsox *i2c_lsm6dsox);
 
 
 #endif
