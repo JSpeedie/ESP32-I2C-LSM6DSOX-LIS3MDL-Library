@@ -13,9 +13,9 @@ are some example commands you might run to achieve this:
 
 ```bash
 git clone git@github.com:JSpeedie/ESP32-I2C-LSM6DSOX-LIS3MDL-Library.git ESP32-I2C-LSM6DSOX-LIS3MDL-LibraryGit
-mkdir ~/esp/esp-idf/projects/[your project name/path here]/components
+mkdir -p ~/esp/esp-idf/[your project name/path here]/components
 cp -r ESP32-I2C-LSM6DSOX-LIS3MDL-LibraryGit/components/esp32-i2c-lsm6dsox-lis3mdl/ ~/esp/esp-idf/[your project name/path here]/components/esp32-i2c-lsm6dsox-lis3mdl/
-cd [your project name/path here]
+cd ~/esp/esp-idf/[your project name/path here]
 ```
 
 Then you need to edit the `main/CMakeLists.txt` file within your project such
